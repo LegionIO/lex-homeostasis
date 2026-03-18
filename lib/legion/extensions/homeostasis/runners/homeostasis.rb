@@ -33,6 +33,8 @@ module Legion
 
           def modulation_for(subsystem:, **)
             sym = subsystem.to_sym
+            return nil unless Helpers::Constants::SETPOINTS.key?(sym)
+
             signal = regulator.signals[sym]
             sp_status = regulator.subsystem_status(sym)
 

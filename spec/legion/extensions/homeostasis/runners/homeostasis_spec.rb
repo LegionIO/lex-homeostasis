@@ -74,9 +74,17 @@ RSpec.describe Legion::Extensions::Homeostasis::Runners::Homeostasis do
       expect(result[:signal]).to have_key(:type)
     end
 
-    it 'returns hold signal for unregulated subsystem' do
+    it 'returns nil for invalid subsystem' do
       result = client.modulation_for(subsystem: :nonexistent)
-      expect(result[:signal][:type]).to eq(:hold)
+      expect(result).to be_nil
+    end
+
+    it 'accepts all SETPOINTS keys' do
+      Legion::Extensions::Homeostasis::Helpers::Constants::SETPOINTS.each_key do |sub|
+        result = client.modulation_for(subsystem: sub)
+        expect(result).not_to be_nil, "Expected non-nil for subsystem #{sub}"
+        expect(result[:subsystem]).to eq(sub)
+      end
     end
 
     it 'includes setpoint info' do
